@@ -1,0 +1,11 @@
+[project]
+name = "repository-ai-ready-issue-triage-board-20260801"
+version = "0.1.0"
+description = "Rank GitHub issues by readiness for AI coding agents."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "maxi-maxima"}]
+
+[project.scripts]
+repository-ai-ready-issue-triage-board-20260801 = "repository_ai_ready_issue_triage_board_20260801.cli:main"
