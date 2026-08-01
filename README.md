@@ -10,14 +10,15 @@ GitHub and developer communities are pushing issue-to-PR agents, automated triag
 
 ```bash
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json
+python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format json
 python -m unittest discover -s tests
 ```
 
 ## Example
 
 ```csv
-number,score,title,reasons
-12,95,Crash on save,has reproduction clues; has concrete evidence; label suggests delegation
+number,score,recommendation,title,reasons
+12,95,delegate_to_agent,Crash on save,has reproduction clues; has concrete evidence; label suggests delegation
 ```
 
 ## Roadmap
