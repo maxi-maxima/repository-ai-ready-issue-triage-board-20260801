@@ -11,6 +11,7 @@ GitHub 和开发者社区正在推动 issue-to-PR Agent、自动分诊和多 Age
 ```bash
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format json
+python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format markdown
 python -m unittest discover -s tests
 ```
 
@@ -21,8 +22,14 @@ number,score,recommendation,title,reasons
 12,95,delegate_to_agent,Crash on save,has reproduction clues; has concrete evidence; label suggests delegation
 ```
 
+Markdown 输出适合粘贴到项目看板或 Issue 评论：
+
+```markdown
+| Number | Score | Recommendation | Title | Reasons |
+| --- | ---: | --- | --- | --- |
+```
+
 ## 路线图
 
 - GitHub API 导入器
-- Markdown 项目看板输出
 - forbidden labels/files 策略规则

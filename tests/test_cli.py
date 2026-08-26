@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from repository_ai_ready_issue_triage_board_20260801.cli import build_rows, main, recommendation, score_issue
+from repository_ai_ready_issue_triage_board_20260801.cli import build_rows, main, recommendation, render_markdown, score_issue
 
 
 class ScoreTests(unittest.TestCase):
@@ -34,6 +34,23 @@ class ScoreTests(unittest.TestCase):
                 main([str(path), '--format', 'json'])
         payload = json.loads(mocked_print.call_args.args[0])
         self.assertEqual(payload['issues'][0]['recommendation'], 'delegate_to_agent')
+
+    def test_markdown_format_escapes_table_cells(self):
+        rows = build_rows([
+            {'number': 1, 'title': 'Crash | save', 'body': 'Steps to repro\ntraceback', 'labels': ['agent-ready']},
+        ])
+        markdown = render_markdown(rows)
+        self.assertIn('| Number | Score | Recommendation | Title | Reasons |', markdown)
+        self.assertIn('Crash \\| save', markdown)
+        self.assertIn('has reproduction clues; has concrete evidence', markdown)
+
+    def test_main_markdown_format(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'issues.json'
+            path.write_text(json.dumps([{'number': 1, 'title': 'Crash', 'body': 'Steps to repro with traceback', 'labels': ['agent-ready']}]), encoding='utf-8')
+            with patch('builtins.print') as mocked_print:
+                main([str(path), '--format', 'markdown'])
+        self.assertIn('delegate_to_agent', mocked_print.call_args.args[0])
 
 
 if __name__ == '__main__':

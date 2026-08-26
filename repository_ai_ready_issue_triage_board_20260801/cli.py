@@ -58,14 +58,39 @@ def build_rows(issues):
     return rows
 
 
+def markdown_escape(value):
+    return str(value).replace('|', '\\|').replace('\n', '<br>')
+
+
+def render_markdown(rows):
+    lines = [
+        '| Number | Score | Recommendation | Title | Reasons |',
+        '| --- | ---: | --- | --- | --- |',
+    ]
+    for row in rows:
+        lines.append(
+            '| {number} | {score} | {recommendation} | {title} | {reasons} |'.format(
+                number=markdown_escape(row['number'] if row['number'] is not None else ''),
+                score=markdown_escape(row['score']),
+                recommendation=markdown_escape(row['recommendation']),
+                title=markdown_escape(row['title']),
+                reasons=markdown_escape(row['reasons']),
+            )
+        )
+    return '\n'.join(lines)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description='Build an AI-agent-ready triage board from issue JSON.')
     ap.add_argument('issues_json')
-    ap.add_argument('--format', choices=['csv', 'json'], default='csv', help='output format')
+    ap.add_argument('--format', choices=['csv', 'json', 'markdown'], default='csv', help='output format')
     ns = ap.parse_args(argv)
     rows = build_rows(load(ns.issues_json))
     if ns.format == 'json':
         print(json.dumps({'issues': rows}, indent=2))
+        return
+    if ns.format == 'markdown':
+        print(render_markdown(rows))
         return
     w = csv.DictWriter(sys.stdout, fieldnames=['number', 'score', 'recommendation', 'title', 'reasons'])
     w.writeheader()

@@ -11,6 +11,7 @@ GitHub and developer communities are pushing issue-to-PR agents, automated triag
 ```bash
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format json
+python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format markdown
 python -m unittest discover -s tests
 ```
 
@@ -21,8 +22,14 @@ number,score,recommendation,title,reasons
 12,95,delegate_to_agent,Crash on save,has reproduction clues; has concrete evidence; label suggests delegation
 ```
 
+Markdown output is available for project boards and issue comments:
+
+```markdown
+| Number | Score | Recommendation | Title | Reasons |
+| --- | ---: | --- | --- | --- |
+```
+
 ## Roadmap
 
 - GitHub API importer
-- Markdown project-board output
 - Policy rules for forbidden labels and files
