@@ -12,8 +12,11 @@ GitHub 和开发者社区正在推动 issue-to-PR Agent、自动分诊和多 Age
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format json
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format markdown
+python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --forbid-label security --forbid-label legal
 python -m unittest discover -s tests
 ```
+
+可重复传入 `--forbid-label`，让匹配标签的 Issue 无论分数多高都保留给人工处理。标签按不区分大小写的完整名称匹配。
 
 ## 示例
 
@@ -32,4 +35,4 @@ Markdown 输出适合粘贴到项目看板或 Issue 评论：
 ## 路线图
 
 - GitHub API 导入器
-- forbidden labels/files 策略规则
+- forbidden files 策略规则

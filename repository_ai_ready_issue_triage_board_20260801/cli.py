@@ -5,7 +5,7 @@ import re
 import sys
 
 
-def score_issue(issue):
+def score_issue(issue, forbidden_labels=()):
     text = (issue.get('title', '') + '\n' + issue.get('body', '')).lower()
     score = 50
     reasons = []
@@ -25,6 +25,10 @@ def score_issue(issue):
     if any('good first' in x or 'agent' in x for x in labels):
         score += 10
         reasons.append('label suggests delegation')
+    blocked = sorted(set(labels) & {str(x).strip().lower() for x in forbidden_labels})
+    if blocked:
+        score = 0
+        reasons.append(f"forbidden label: {', '.join(blocked)}")
     return max(0, min(100, score)), reasons
 
 
@@ -43,10 +47,10 @@ def load(path):
     return data if isinstance(data, list) else data.get('issues', [])
 
 
-def build_rows(issues):
+def build_rows(issues, forbidden_labels=()):
     rows = []
     for issue in issues:
-        score, reasons = score_issue(issue)
+        score, reasons = score_issue(issue, forbidden_labels)
         rows.append({
             'number': issue.get('number'),
             'title': issue.get('title', ''),
@@ -84,8 +88,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description='Build an AI-agent-ready triage board from issue JSON.')
     ap.add_argument('issues_json')
     ap.add_argument('--format', choices=['csv', 'json', 'markdown'], default='csv', help='output format')
+    ap.add_argument('--forbid-label', action='append', default=[], help='keep issues with this label human-owned; repeat as needed')
     ns = ap.parse_args(argv)
-    rows = build_rows(load(ns.issues_json))
+    rows = build_rows(load(ns.issues_json), ns.forbid_label)
     if ns.format == 'json':
         print(json.dumps({'issues': rows}, indent=2))
         return

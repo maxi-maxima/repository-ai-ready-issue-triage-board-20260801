@@ -12,8 +12,12 @@ GitHub and developer communities are pushing issue-to-PR agents, automated triag
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format json
 python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --format markdown
+python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.json --forbid-label security --forbid-label legal
 python -m unittest discover -s tests
 ```
+
+Repeat `--forbid-label` to keep matching issues human-owned regardless of their
+readiness score. Label matching is case-insensitive and exact.
 
 ## Example
 
@@ -32,4 +36,4 @@ Markdown output is available for project boards and issue comments:
 ## Roadmap
 
 - GitHub API importer
-- Policy rules for forbidden labels and files
+- Policy rules for forbidden files

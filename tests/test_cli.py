@@ -26,6 +26,14 @@ class ScoreTests(unittest.TestCase):
         self.assertEqual(rows[0]['recommendation'], 'delegate_to_agent')
         self.assertIn('recommendation', rows[1])
 
+    def test_forbidden_label_keeps_issue_human_owned(self):
+        rows = build_rows([
+            {'number': 1, 'title': 'Crash on save', 'body': 'Steps to repro with traceback', 'labels': ['agent-ready', 'Security']},
+        ], ['security'])
+        self.assertEqual(rows[0]['score'], 0)
+        self.assertEqual(rows[0]['recommendation'], 'keep_human_owned')
+        self.assertIn('forbidden label: security', rows[0]['reasons'])
+
     def test_main_json_format(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / 'issues.json'
@@ -34,6 +42,15 @@ class ScoreTests(unittest.TestCase):
                 main([str(path), '--format', 'json'])
         payload = json.loads(mocked_print.call_args.args[0])
         self.assertEqual(payload['issues'][0]['recommendation'], 'delegate_to_agent')
+
+    def test_main_accepts_repeated_forbidden_labels(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'issues.json'
+            path.write_text(json.dumps([{'number': 1, 'title': 'Crash', 'body': 'Steps to repro with traceback', 'labels': ['legal']}]), encoding='utf-8')
+            with patch('builtins.print') as mocked_print:
+                main([str(path), '--format', 'json', '--forbid-label', 'security', '--forbid-label', 'legal'])
+        payload = json.loads(mocked_print.call_args.args[0])
+        self.assertEqual(payload['issues'][0]['recommendation'], 'keep_human_owned')
 
     def test_markdown_format_escapes_table_cells(self):
         rows = build_rows([
