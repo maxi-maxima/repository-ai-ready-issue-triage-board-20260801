@@ -16,7 +16,7 @@ python -m repository_ai_ready_issue_triage_board_20260801.cli examples/issues.js
 python -m unittest discover -s tests
 ```
 
-可重复传入 `--forbid-label`，让匹配标签的 Issue 无论分数多高都保留给人工处理。标签按不区分大小写的完整名称匹配。
+可重复传入 `--forbid-label`，让匹配标签的 Issue 无论分数多高都保留给人工处理。标签按不区分大小写的完整名称匹配，输入可使用纯标签名或 GitHub REST API 标签对象。
 
 ## 示例
 

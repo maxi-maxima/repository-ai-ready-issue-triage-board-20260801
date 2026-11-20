@@ -34,6 +34,13 @@ class ScoreTests(unittest.TestCase):
         self.assertEqual(rows[0]['recommendation'], 'keep_human_owned')
         self.assertIn('forbidden label: security', rows[0]['reasons'])
 
+    def test_forbidden_label_accepts_github_api_label_objects(self):
+        rows = build_rows([
+            {'number': 1, 'title': 'Crash on save', 'body': 'Steps to repro with traceback', 'labels': [{'name': 'Security'}]},
+        ], ['security'])
+        self.assertEqual(rows[0]['score'], 0)
+        self.assertEqual(rows[0]['recommendation'], 'keep_human_owned')
+
     def test_main_json_format(self):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / 'issues.json'

@@ -21,7 +21,7 @@ def score_issue(issue, forbidden_labels=()):
     if re.search(r'\b(refactor everything|rewrite|vague|sometimes|flaky)\b', text):
         score -= 15
         reasons.append('ambiguous scope')
-    labels = [str(x).lower() for x in issue.get('labels', [])]
+    labels = [str(x.get('name', '') if isinstance(x, dict) else x).strip().lower() for x in issue.get('labels', [])]
     if any('good first' in x or 'agent' in x for x in labels):
         score += 10
         reasons.append('label suggests delegation')

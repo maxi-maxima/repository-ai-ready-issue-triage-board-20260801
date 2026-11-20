@@ -17,7 +17,8 @@ python -m unittest discover -s tests
 ```
 
 Repeat `--forbid-label` to keep matching issues human-owned regardless of their
-readiness score. Label matching is case-insensitive and exact.
+readiness score. Label matching is case-insensitive and exact. Inputs may use
+plain label names or GitHub REST API label objects.
 
 ## Example
 
